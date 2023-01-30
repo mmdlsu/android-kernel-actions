@@ -81,7 +81,11 @@ if [[ $arch = "arm64" ]]; then
             make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
             host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
         fi
-
+        
+        msg "Add apt repository..."
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        sudo add-apt-repository -y "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$ver_number main"
+        
         if ! apt install -y --no-install-recommends clang-"$ver_number" \
             lld-"$ver_number" llvm-"$ver_number" $additional_packages; then
             err "Compiler package not found, refer to the README for details"
